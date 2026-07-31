@@ -19,11 +19,21 @@ import google.generativeai as genai
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+try:
+    import streamlit as st
 
-if GEMINI_API_KEY is None:
+    GEMINI_API_KEY = st.secrets.get(
+        "GEMINI_API_KEY",
+        os.getenv("GEMINI_API_KEY")
+    )
+
+except Exception:
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
     raise ValueError(
-        "GEMINI_API_KEY tidak ditemukan. Pastikan file .env sudah benar."
+        "GEMINI_API_KEY tidak ditemukan. "
+        "Pastikan file .env (lokal) atau Streamlit Secrets sudah benar."
     )
 
 genai.configure(api_key=GEMINI_API_KEY)
